@@ -95,11 +95,18 @@ export const AuthProvider = ({ children }) => {
         return !!token && !!user;
     }
 
+    const logout = ()=>{
+        setToken(null);
+        setUser(null);
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("userData");
+    }
     const contextValue = {
         register,
         login,
         isAuthenticted,
-        loading
+        loading,
+        logout
     }
     return (
         <AuthContext.Provider value={contextValue}>
