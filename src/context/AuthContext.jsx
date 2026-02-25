@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
          setLoading(false);
 
 
-    },  []);
+    }, []);
 
     const register = async (firstname, lastname, phonenumber, email, password) => {
         try {
@@ -98,8 +98,9 @@ export const AuthProvider = ({ children }) => {
     const logout = ()=>{
         setToken(null);
         setUser(null);
-        localStorage.removeItem("access_token");
+        localStorage.removeItem('access_token');
         localStorage.removeItem("userData");
+        localStorage.removeItem('refresh_token');
     }
     const contextValue = {
         register,
