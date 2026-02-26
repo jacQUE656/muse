@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 
 const NavBar = () => {
 const {user , logout} = useAuth();
+
 console.log(user);
 
 const handleLogout=()=>{
@@ -26,7 +27,7 @@ logout();
             <div className="flex items-center gap-2 bg-gray-800 px-3 py-1 rounded-2xl">
             <User className="w-4 h-4 text-white"/>
             <span className="text-white text-sm hidden sm:inline">
-            {user?.email?.split("@"[0])}
+            {user?.split("@"[0])}
             </span>
             </div>
             <button 
