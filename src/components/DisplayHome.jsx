@@ -22,7 +22,7 @@ const DisplayHome = () => {
             key={index}
             name={item.name}
             description = {item.description}
-            id={item._id}
+            id={item.id}
             image ={item.imageUrl}
             />
           ))}
@@ -39,7 +39,7 @@ const DisplayHome = () => {
             key={index}
             name={index.name}
             description={item.description}
-            id={item._id}
+            id={item.id}
             image={item.image}
             />
           ))}
