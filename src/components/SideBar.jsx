@@ -1,15 +1,23 @@
 import { ArrowRight, Home, Library, Plus, Search, X } from "lucide-react";
-import { useState } from "react";
+import { use, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSearch } from "../context/SearchContext";
 
 
 const SideBar = () => {
     const navigate = useNavigate();
     const [showSearchInput, setShowSearchInput] = useState(false);
 
+    const { searchQuery, setSearchQuery, setIsSearchActive , clearSearch} = useSearch();
     const handleSearchClick = () => {
+
+        setIsSearchActive(true);
         setShowSearchInput(true);
         navigate("/search");
+    }
+    const handleClearSearch = ()=>{
+        setShowSearchInput(false);
+        clearSearch();
     }
     return (
         <div className="w-[25%] h-full p-2 flex-col gap-2 text-white hidden lg:flex">
@@ -22,6 +30,8 @@ const SideBar = () => {
                         Home
                     </p>
                 </div>
+
+                {/*SEARCH BOX */}
                 <div className="px-4 py-2">
                     {!showSearchInput ? (
                         <div
@@ -33,13 +43,17 @@ const SideBar = () => {
                     ) : (
                         <div className="flex items-center gap-2 pl-4">
                             <Search className="w-6 h-6 text-gray-400" />
-                            <input type="text"
+                            {/*SEARCH BOX */}
+                            <input
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                type="text"
                                 placeholder="What do you want to listen to?"
                                 className="flex-1 bg-[#2a2a2a] text-white placeholder-gray-400 px-3 py-2 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-green-400 "
                                 autoFocus
                             />
                             <button
-                                onClick={handleSearchClick}
+                                onClick={handleClearSearch}
                                 className="p-1 hover:bg-gray-700 rounded-full transition-colors">
                                 <X className="w-4 h-4 text-gray-400 hover:text-white" />
                             </button>
@@ -65,8 +79,8 @@ const SideBar = () => {
                         Create playlist
                     </button>
                 </div>
-                   <div className=" cursor-pointer p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-start mt-4-1 pl-4">
-                    
+                <div className=" cursor-pointer p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-start mt-4-1 pl-4">
+
                     <h1>Let's find some podcasts to follow</h1>
                     <p className="cursor-pointer font-light">We will keep you updated on new episodes</p>
                     <button className="px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4">

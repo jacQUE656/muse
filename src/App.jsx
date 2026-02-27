@@ -2,8 +2,13 @@ import { Toaster } from "react-hot-toast";
 import Display from "./components/Display.jsx";
 import AuthWrapper from "./components/AuthWrapper.jsx";
 import SideBar from "./components/SideBar.jsx";
+import Player from "./components/Player.jsx";
+import { useContext } from "react";
+import { PlayerContext } from "./context/PlayerContext.jsx";
 
 const App = () => {
+
+  const {audioRef , track} = useContext(PlayerContext);
   return (
 
     <>
@@ -15,12 +20,17 @@ const App = () => {
             <Display />
           </div>
           {/* PLAYER COMPONENT */}
+          <Player/>
+          <audio
+          ref={audioRef}
+          src={track ? track.file : ""}
+          preload="auto"
+          ></audio>
         </div>
-
       </AuthWrapper>
     </>
 
-
+ 
   )
 }
 export default App;
