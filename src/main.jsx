@@ -6,6 +6,7 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { BrowserRouter } from 'react-router-dom'
 import { PlayerContextProvider } from './context/PlayerContext.jsx'
 import { SearchProvider } from './context/SearchContext.jsx'
+import { PlaylistContextProvider } from './context/PlaylistContext.jsx'
 
 createRoot(document.getElementById('root')).render(
 
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')).render(
     <AuthProvider>
     <PlayerContextProvider>
         <SearchProvider>
-          <App />
+<PlaylistContextProvider>
+  <App />
+</PlaylistContextProvider>
         </SearchProvider>
       </PlayerContextProvider>
     </AuthProvider>

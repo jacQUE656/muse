@@ -1,24 +1,41 @@
-import { ArrowRight, Home, Library, Plus, Search, X } from "lucide-react";
-import { use, useState } from "react";
+import { ArrowRight, Home, Library, Plus, Search, Trash2, X } from "lucide-react";
+import { use, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "../context/SearchContext";
+import { PlaylistContext } from "../context/PlaylistContext";
 
 
 const SideBar = () => {
     const navigate = useNavigate();
     const [showSearchInput, setShowSearchInput] = useState(false);
+    const { searchQuery, setSearchQuery, setIsSearchActive, clearSearch } = useSearch();
+    const { playlists, createPlaylist, setName, loading , removePlaylist } = useContext(PlaylistContext);
 
-    const { searchQuery, setSearchQuery, setIsSearchActive , clearSearch} = useSearch();
+
     const handleSearchClick = () => {
 
         setIsSearchActive(true);
         setShowSearchInput(true);
         navigate("/search");
     }
-    const handleClearSearch = ()=>{
+    const handleClearSearch = () => {
         setShowSearchInput(false);
         clearSearch();
     }
+
+    const handleCreatePlaylist = async () => {
+        const pName = prompt("Enter playlist name :");
+        if (!pName) return;
+
+
+        const pDesc = prompt("Enter playlist description :");
+        if (!pDesc) return;
+
+        await createPlaylist(pName, pDesc);
+
+    }
+
+
     return (
         <div className="w-[25%] h-full p-2 flex-col gap-2 text-white hidden lg:flex">
             <div className="bg-[#121212] h-[15%] rounded flex flex-col justify-around">
@@ -61,24 +78,71 @@ const SideBar = () => {
                     )}
                 </div>
             </div>
-            <div className="bg-[#121212] h-[85%] rounded">
+            <div className="bg-[#121212] h-[85%] rounded flex flex-col overflow-hidden">
                 <div className="p-4 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <Library className="w-8 h-8" />
-                        <p className="font-semibold">Your Library</p>
+                        <Library className="w-8 h-8 text-gray-400" />
+                        <p className="font-semibold text-gray-400">Your Playlist Library</p>
                     </div>
                     <div className="flex items-center gap-3">
                         <ArrowRight className="w-5 h-5 cursor-pointer hover:text-green-400 transition-colors" />
-                        <Plus className="w-5 h-5 cursor-pointer hover:text-green-400 transition-colors" />
+                        <Plus
+                            onClick={handleCreatePlaylist}
+                            className="w-5 h-5 cursor-pointer hover:text-green-400 transition-colors" />
                     </div>
                 </div>
-                <div className="p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-start gap-1 pl-4">
-                    <h1>Create your first palylist</h1>
-                    <p className="font-light">It's easy we will help you</p>
-                    <button className="px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4">
-                        Create playlist
-                    </button>
+
+                {/* PLAYLIST NAMES LIST */}
+
+                <div className="flex-1 overflow-y-auto px-4 py-2 flex flex-col gap-2">
+                    {playlists.length < 1 ? (
+
+                        <div className="p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-start gap-1 pl-4">
+                            <h1>Create your first palylist</h1>
+                            <p className="font-light">It's easy we will help you</p>
+                            <button
+                                onClick={handleCreatePlaylist}
+                                disabled={loading}
+                                className="px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4">
+                                {loading ? "Creating..." : "Create playlist"}
+                            </button>
+                        </div>
+
+                    ) : (
+
+                        playlists.map((playlist) => (
+                            <div key={playlist.id} 
+                            onClick={()=> navigate(`/playlist/${playlist.id}`)}
+                            className=" group flex items-centerb gap-3 justify-between cursor-pointer hover:text-green-400 transition-colors py-1">
+                                <p className="font-medium truncate text-[15px]">{playlist.name}</p>
+                                
+                                 <button
+                                 className="opacity-100 group-hover:opacity-100 p-1 hover:text-red-500 transition-all"
+                                  onClick={(e)=>{
+                                    e.stopPropagation();
+                                    removePlaylist(playlist.id)
+                                 }}>
+                                    <Trash2 className="w-4 h-4"/>
+
+                                 </button>
+                            </div>
+                             
+                        ))
+                      
+
+                    )}
+                    <div className="p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-start gap-1 pl-4">
+                        <h1>Create a palylist</h1>
+                        <p className="font-light">It's easy we will help you</p>
+                        <button
+                            onClick={handleCreatePlaylist}
+                            disabled={loading}
+                            className="px-4 py-1.5 bg-white text-[15px] text-black rounded-full mt-4">
+                            {loading ? "Creating..." : "Create playlist"}
+                        </button>
+                    </div>
                 </div>
+
                 <div className=" cursor-pointer p-4 bg-[#242424] m-2 rounded font-semibold flex flex-col items-start justify-start mt-4-1 pl-4">
 
                     <h1>Let's find some podcasts to follow</h1>

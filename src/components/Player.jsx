@@ -1,11 +1,11 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { PlayerContext } from "../context/PlayerContext";
 import { ListMusic, ListMusicIcon, Maximize2, Mic, Minimize2, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Speaker, Volume2 } from "lucide-react";
 
 
 const Player = () => {
 
-  const { track, seekBar, seekBg, playStatus, play, pause, time, previous, next, seekSong } = useContext(PlayerContext);
+  const { track, seekBar, seekBg, playStatus, play, pause, time, previous, next, seekSong, nextSong, isRepeat,isShuffle,setIsRepeat, setIsShuffle  } = useContext(PlayerContext);
 
 
 
@@ -15,21 +15,26 @@ const Player = () => {
         <img src={track.image} alt="Album" className="w-12" />
         <div>
           <p>{track.name}</p>
-          <p>{track.description.slice(0, 12)}</p>
+          <p>{track.description?.slice(0, 25)}</p>
         </div>
       </div>
       <div className="flex flex-col items-center gap-1 m-auto">
         <div className="flex gap-4">
-          <Shuffle className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-          <SkipBack onClick={previous} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+          <Shuffle onClick={()=>setIsShuffle(!isShuffle)}
+           className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
+          <SkipBack onClick={previous} 
+          className={`w-4 h-5 cursor-pointer transition-colors ${isShuffle ? 'text-green-500': 'text-gray-400 hover:text-white'}` }/>
           {playStatus ? (
             <Pause onClick={pause} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
 
           ) : (
-            <Play onClick={play} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+            <Play onClick={play}
+                className={`w-4 h-5 cursor-pointer transition-colors ${isRepeat ? 'text-green-500': 'text-gray-400 hover:text-white'}` } />
           )}
-          <SkipForward onClick={next} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
-          <Repeat className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+          <SkipForward onClick={nextSong} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+          <Repeat 
+          onClick={()=>setIsRepeat(!isRepeat)}
+          className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
 
         </div>
         <div className="flex items-center gap-5">

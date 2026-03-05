@@ -23,7 +23,7 @@ const App = () => {
           <Player/>
           <audio
           ref={audioRef}
-          src={track ? track.file : ""}
+          src={track ? track.file : null}
           preload="auto"
           ></audio>
         </div>

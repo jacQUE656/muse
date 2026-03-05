@@ -5,6 +5,7 @@ import Search from "./Search";
 import NavBar from "./NavBar";
 import { useContext, useEffect, useRef } from "react";
 import { PlayerContext } from "../context/PlayerContext";
+import DisplayPlaylist from "./DisplayPlaylist";
 
 const Display = () => {
   const { albumsData } = useContext(PlayerContext);
@@ -34,7 +35,7 @@ const Display = () => {
             <Route path="/" element={<DisplayHome />} />
             <Route path="/albums/:id" element={<DisplayAlbum album={albumsData?.find(x => x.id == albumId)} />} />
             <Route path="/search" element={<Search />} />
-
+            <Route path="/playlist/:id" element={<DisplayPlaylist/>} />
           </Routes>
         </div>
     </div>

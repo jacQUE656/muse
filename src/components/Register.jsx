@@ -153,7 +153,7 @@ const Register = ({onSwitchToLogin}) => {
                             <label htmlFor="password" className="block text-sm font-medium text-gray-200 mb-2">
                                 password
                             </label>
-                            <input type="text"
+                            <input type="password"
                                 name="password"
                                 id="password"
                                 autoComplete="new-password"
@@ -169,7 +169,7 @@ const Register = ({onSwitchToLogin}) => {
                             <label htmlFor="confirmpassword" className="block text-sm font-medium text-gray-200 mb-2">
                                 confirmPassword
                             </label>
-                            <input type="text"
+                            <input type="password"
                                 name="confirmpassword"
                                 id="confirmpassword"
                                 autoComplete="new-password"

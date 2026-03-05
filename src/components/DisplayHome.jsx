@@ -17,15 +17,18 @@ const DisplayHome = () => {
         </h1>
         <div className="flex overflow-auto">
           {/* Display Album Data */}
-          {albumsData.map((item,index) =>(
+
+          {
+            albumsData.length > 0?( albumsData.map((item,index) =>(
              <AlbumItem 
             key={index}
             name={item.name}
             description = {item.description}
             id={item.id}
             image ={item.imageUrl}
-            />
-          ))}
+            />))) : (
+              <p className="text-gray-400"> Loading albums ...</p>
+            )}
         </div>
       </div>
       <div className="mb-4">
@@ -37,7 +40,7 @@ const DisplayHome = () => {
           {songsData.map((item , index) =>(
             <SongItem
             key={index}
-            name={index.name}
+            name={item.name}
             description={item.description}
             id={item.id}
             image={item.image}

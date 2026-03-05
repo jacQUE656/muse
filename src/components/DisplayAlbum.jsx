@@ -3,10 +3,12 @@ import { useParams } from "react-router-dom";
 import { PlayerContext } from "../context/PlayerContext";
 import { assets } from "../assets/assets";
 import { Clock } from "lucide-react";
+
 const DisplayAlbum = ({ album }) => {
   const { id } = useParams();
 
   const { albumsData, songsData } = useContext(PlayerContext);
+  const { playWithId } = useContext(PlayerContext);
 
   return album && albumsData ? (
     <>
@@ -42,6 +44,7 @@ const DisplayAlbum = ({ album }) => {
         .filter(song => song.album === album.name)
         .map((item, index) => (
           <div
+          onClick={() => playWithId(item.id)}
             className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
             key={index}>
             <p className="text-white">

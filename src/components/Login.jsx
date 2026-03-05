@@ -32,9 +32,7 @@ const Login = ({onSwitchToRegister}) => {
       toast.success(result.message);
 
     } catch (error) {
-       setError(error.message);
-       toast.error("Unexpected error occured. Please try again later .");
-
+            toast.error(result.message);
     } finally {
       setLoading(false);
     }
@@ -96,7 +94,7 @@ const Login = ({onSwitchToRegister}) => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-200 mb-2">
                 password
               </label>
-              <input type="text"
+              <input type="password"
                 name="passsword"
                 id="password"
                 autoComplete="new-password"

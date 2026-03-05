@@ -24,16 +24,18 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [loading, setLoading] = useState(false);
-
+     const [userId, setUserId] = useState('');
     useEffect(() => {
 
         setLoading(true);
         const storedToken = localStorage.getItem("token");
         const storedUser = localStorage.getItem("userData");
+        const storedUserId = localStorage.getItem("userId");
 
         if (storedToken && storedUser) {
             setToken(storedToken);
             setUser(storedUser);
+            setUserId(storedUserId);
         }
          setLoading(false);
 
@@ -67,12 +69,14 @@ export const AuthProvider = ({ children }) => {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password });
+            const response = await axios.post(`${API_BASE_URL}/api/auth/login`, { email, password, portal: "user" });
             if (response.status === 200) {
                 setToken(response.data.token);
                 setUser(response.data.user);
+                setUserId(response.data.user_id)
                 localStorage.setItem("token", response.data.token);
                 localStorage.setItem("userData",response.data.user);
+                localStorage.setItem("userId",response.data.user_id);
                 //saveToken(response.data.token);
 
                 return {
@@ -103,8 +107,10 @@ export const AuthProvider = ({ children }) => {
         // clear cookies
         setToken(null);
         setUser(null);
+        setUserId(null)
         localStorage.removeItem('token');
         localStorage.removeItem("userData");
+        localStorage.removeItem("userId");
        
     }
   
@@ -116,7 +122,9 @@ export const AuthProvider = ({ children }) => {
         loading,
         logout,
         user,
-        token
+        token,
+        userId,
+        
     }
     return (
         <AuthContext.Provider value={contextValue}>
