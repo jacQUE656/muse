@@ -5,7 +5,7 @@ import { ListMusic, ListMusicIcon, Maximize2, Mic, Minimize2, Pause, Play, Repea
 
 const Player = () => {
 
-  const { track, seekBar, seekBg, playStatus, play, pause, time, previous, next, seekSong, nextSong, isRepeat,isShuffle,setIsRepeat, setIsShuffle  } = useContext(PlayerContext);
+  const { track, seekBar, seekBg, playStatus, play, pause, time, previous, next, seekSong, isRepeat,isShuffle,setIsRepeat, setIsShuffle,toggleMaximize  } = useContext(PlayerContext);
 
 
 
@@ -15,7 +15,7 @@ const Player = () => {
         <img src={track.image} alt="Album" className="w-12" />
         <div>
           <p>{track.name}</p>
-          <p>{track.description?.slice(0, 25)}</p>
+          <p>{track.description?.slice(0, )}</p>
         </div>
       </div>
       <div className="flex flex-col items-center gap-1 m-auto">
@@ -31,7 +31,7 @@ const Player = () => {
             <Play onClick={play}
                 className={`w-4 h-5 cursor-pointer transition-colors ${isRepeat ? 'text-green-500': 'text-gray-400 hover:text-white'}` } />
           )}
-          <SkipForward onClick={nextSong} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+          <SkipForward onClick={next} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
           <Repeat 
           onClick={()=>setIsRepeat(!isRepeat)}
           className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
@@ -55,8 +55,8 @@ const Player = () => {
         <Mic className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
         <Speaker className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
         <Volume2 className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-        <Minimize2 className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-        <Maximize2 className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
+       {/* <Minimize2 className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" /> */}
+        <Maximize2 onClick={toggleMaximize} className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
       </div>
 
     </div>

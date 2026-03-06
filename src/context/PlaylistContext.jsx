@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { addPlaylist, deletePlaylist, getPlaylistById, getUserPlaylists, renamePlaylist } from "../services/ApiService";
+import { addPlaylist, addSongToPlaylist, deletePlaylist, getPlaylistById, getUserPlaylists, renamePlaylist } from "../services/ApiService";
 import toast from "react-hot-toast";
 
 export const PlaylistContext = createContext();
@@ -104,6 +104,17 @@ export const PlaylistContextProvider = ({ children }) => {
             toast.error(result.message);
         }
     }
+       const addSong = async (playlistId, songId) => {
+        const result = await addSongToPlaylist(playlistId, songId)
+        if (result.success) {
+            return { success: true };
+        }
+        return {
+            success: false,
+            message: result.message
+        }
+    }
+    
 
     const contextValue = {
         playlists,
@@ -116,7 +127,8 @@ export const PlaylistContextProvider = ({ children }) => {
         loading,
         removePlaylist,
         fetchSinglePlaylist,
-        updatePlaylistName
+        updatePlaylistName,
+        addSong
 
     }
 

@@ -33,6 +33,8 @@ export const PlayerContextProvider = ({ children }) => {
     const [isShuffle, setIsShuffle] = useState(false);
     const [isRepeat, setIsRepeat] = useState(false);
 
+    const [isMaximized , setIsMaximized ] = useState(false);
+    const toggleMaximize = ()=>setIsMaximized(!isMaximized);
 
     const playPlaylist = (songs, index = 0) => {
         if (songs.length === 0) return;
@@ -43,6 +45,7 @@ export const PlayerContextProvider = ({ children }) => {
     }
 
     const nextSong = () => {
+        if (!songsQueue || songsQueue.length === 0) return;
         if (isRepeat) {
             audioRef.current.currentTime = 0;
             audioRef.current.play();
@@ -59,10 +62,12 @@ export const PlayerContextProvider = ({ children }) => {
             setCurrentTrackIndex(nextIndex);
             setTrack(songsQueue[nextIndex]);
         } else {
-            console.log("End of playlist");
+            setCurrentTrackIndex(0);
+            setTrack(songsQueue[0]);
             setPlayStatus(false);
 
         }
+        setPlayStatus(true);
     }
 
 
@@ -82,20 +87,29 @@ export const PlayerContextProvider = ({ children }) => {
         const foundTrack = songsData.find(item => item.id === id);
         if (foundTrack) {
             setTrack(foundTrack);
+            await audioRef.current.play();
             setPlayStatus(true);
         }
     }
 
     const previous = async () => {
-        if (currentTrackIndex > 0) {
-            const prevIndex = currentTrackIndex - 1;
-            setCurrentTrackIndex(prevIndex);
-            setTrack(songsQueue[prevIndex]);
-        }
+        songsData.map(async (item, index) => {
+            if (track.id === item.id && index > 0) {
+                setTrack(songsData[index - 1]);
+                await audioRef.current.play();
+                setPlayStatus(true);
+            }
+        });
     }
 
     const next = async () => {
-        nextSong();
+        songsData.map(async (item, index) => {
+            if (track.id === item.id && index < songsData.length - 1) {
+                setTrack(songsData[index + 1]);
+                await audioRef.current.play();
+                setPlayStatus(true);
+            }
+        });
     }
 
     const seekSong = async (e) => {
@@ -146,6 +160,9 @@ export const PlayerContextProvider = ({ children }) => {
         }
     }
 
+
+ 
+    
     const contextValue = {
         getSongsData,
         getAlbumsData,
@@ -171,7 +188,9 @@ export const PlayerContextProvider = ({ children }) => {
         isShuffle,
         setIsRepeat,
         setIsShuffle,
-        playPlaylist
+        playPlaylist,
+        isMaximized,
+        toggleMaximize
 
     }
     useEffect(() => {

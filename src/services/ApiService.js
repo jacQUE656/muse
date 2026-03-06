@@ -136,6 +136,28 @@ try {
         };
     }
 }
-
+/**
+ * Adds a song to a specific playlist
+ * @param {string} playlistId 
+ * @param {string} songId 
+ */
+export const addSongToPlaylist = async (playlistId, songId) => {
+    try {
+        // We use the same apiClient which already has your interceptors configured
+        const response = await apiClient.post(`/api/playlists/${playlistId}/songs/${songId}`);
+        
+        return {
+            success: true,
+            message: 'Song added to playlist',
+            data: response.data
+        };
+    } catch (error) {
+        console.error("API Error adding song:", error);
+        return { 
+            success: false, 
+            message: error.response?.data?.message || 'Failed to add song to playlist' 
+        };
+    }
+};
 
 export default apiClient;

@@ -5,15 +5,17 @@ import SideBar from "./components/SideBar.jsx";
 import Player from "./components/Player.jsx";
 import { useContext } from "react";
 import { PlayerContext } from "./context/PlayerContext.jsx";
+import MaximizePlayerOverlay from "./components/MaximizePlayerOverlay.jsx";
 
 const App = () => {
 
-  const {audioRef , track} = useContext(PlayerContext);
+  const {audioRef , track ,isMaximized, toggleMaximize} = useContext(PlayerContext);
   return (
 
     <>
       <Toaster />
       <AuthWrapper>
+        {isMaximized && <MaximizePlayerOverlay/>}
         <div className="h-screen bg-black">
           <div className="h-[90%] flex">
             <SideBar/>
