@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { AuthContext } from "./AuthContext";
-import { addPlaylist, addSongToPlaylist, deletePlaylist, getPlaylistById, getUserPlaylists, renamePlaylist } from "../services/ApiService";
+import { addPlaylist, addSongToPlaylist, deletePlaylist, getPlaylistById, getUserPlaylists, removeSongFromPlaylist, renamePlaylist } from "../services/ApiService";
 import toast from "react-hot-toast";
 
 export const PlaylistContext = createContext();
@@ -105,7 +105,7 @@ export const PlaylistContextProvider = ({ children }) => {
         }
     }
        const addSong = async (playlistId, songId) => {
-        const result = await addSongToPlaylist(playlistId, songId)
+        const result = await addSongToPlaylist(playlistId, songId);
         if (result.success) {
             return { success: true };
         }
@@ -113,7 +113,31 @@ export const PlaylistContextProvider = ({ children }) => {
             success: false,
             message: result.message
         }
-    }
+    };
+    const removeSong = async  (playlistId, songId) => {
+         if(!window.confirm("Are you sure  you to reomove this song from your playlist?")) return;
+        const result = await removeSongFromPlaylist(playlistId , songId);
+        if (result.success) {
+            setPlaylists(prevPlaylists => 
+                prevPlaylists.map(pl =>{
+                    if (pl.id === playlistId) {
+                         return{
+                        ...pl,
+                        songs: pl.songs.filter(song => song.id !== songId)
+                    }
+                    }
+                    return pl;
+                   
+                })
+            )
+            return result;
+        }
+        return {
+            success: false,
+            message: result.message
+        }
+
+    };
     
 
     const contextValue = {
@@ -128,8 +152,8 @@ export const PlaylistContextProvider = ({ children }) => {
         removePlaylist,
         fetchSinglePlaylist,
         updatePlaylistName,
-        addSong
-
+        addSong,
+        removeSong
     }
 
 

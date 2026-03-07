@@ -3,6 +3,7 @@ import { useState } from "react";
 import { assets } from "../assets/assets";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Login = ({onSwitchToRegister}) => {
 
@@ -10,6 +11,8 @@ const Login = ({onSwitchToRegister}) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
+  
 
   const { login } = useAuth();
 
@@ -25,14 +28,19 @@ const Login = ({onSwitchToRegister}) => {
     setLoading(true);
     try {
       const result = await login(email , password);
-      if(!result.success){
-        toast.error(result.message);
-        setError(error.message);
-      }
-      toast.success(result.message);
-
-    } catch (error) {
-            toast.error(result.message);
+      if (result.success) {
+        toast.success("Welcome Back...");
+       
+      }else if (result.needsVerification) {
+        // Redirect to the verification page passing the email
+        navigate('/verify', { state: { email: email } });
+    } else {
+        setError(result.message);
+    }
+    }catch (err) {
+      // Use err here instead of result
+      toast.error(err.message || 'An unexpected error occurred');
+      setError('Server error occurred');
     } finally {
       setLoading(false);
     }
@@ -48,7 +56,7 @@ const Login = ({onSwitchToRegister}) => {
         <div className="text-center">
           <div className="flex items-center justify-center mb-6">
             <div className="flex items-center justify-center mb-6">
-              <img src={assets.logo} alt="Musify_logo" className="w-16 h-16" />
+              <img src={assets.logo2} alt="Musify_logo" className="w-25 h-25" />
               <h1 className="ml-3 text-3xl font-bold text-white">
                 Musify
               </h1>

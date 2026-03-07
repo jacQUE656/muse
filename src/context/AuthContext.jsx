@@ -90,13 +90,20 @@ export const AuthProvider = ({ children }) => {
                 };
             }
 
-        } catch (error) {
-
-            return {
-                success: false,
-                message: error.response.data || 'Network Failed'
+        }catch (error) {
+        // Check if the server says the user is not verified
+        if (error.response?.status === 403) {
+            return { 
+                success: false, 
+                message: "Account not verified. Please verify your email.",
+                needsVerification: true 
             };
         }
+        return { 
+            success: false, 
+            message: error.response?.data?.message || "Login failed" 
+        };
+    }
     }
 
     const isAuthenticted = () => {

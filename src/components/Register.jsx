@@ -3,6 +3,7 @@ import { useState } from "react";
 import { assets } from "../assets/assets";
 import toast from "react-hot-toast";
 import { useAuth } from "../context/AuthContext";
+import EmailVerification from "./EmailVerifiation";
 
 
 const Register = ({onSwitchToLogin}) => {
@@ -16,7 +17,7 @@ const Register = ({onSwitchToLogin}) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const { register } = useAuth();
-    
+    const [isVerifying, setIsVerifying] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -37,7 +38,8 @@ const Register = ({onSwitchToLogin}) => {
             const result = await register(firstname, lastname, phonenumber, email, password);
             if (result.success) {
                 toast.success(result.message);
-                onSwitchToLogin();
+                setIsVerifying(true);
+                //onSwitchToLogin();
             }
 
         } catch {
@@ -53,12 +55,15 @@ const Register = ({onSwitchToLogin}) => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-900 flex items-center justify-center p4">
-            <div className="max-w-md w-full space-y-8">
+{isVerifying ? (
+    <EmailVerification prefilledEmail={email} />
+):(
+    <div className="max-w-md w-full space-y-8">
                 {/* HEADER */}
                 <div className="text-center">
                     <div className="flex items-center justify-center mb-6">
                         <div className="flex items-center justify-center mb-6">
-                            <img src={assets.logo} alt="Musify_logo" className="w-16 h-16" />
+                            <img src={assets.logo2} alt="Musify_logo" className="w-16 h-16" />
                             <h1 className="ml-3 text-3xl font-bold text-white">
                                 Musify
                             </h1>
@@ -73,7 +78,7 @@ const Register = ({onSwitchToLogin}) => {
                 </div>
 
                 {/*REGISTER FORM */}
-                <div className="bg-gray-900/80 backdrop-blug-lg rounded-2xl p-8 shadow-2xl border border-gray-600">
+                <div className="bg-gray-900/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-gray-600">
                     <form className="space-y-6" onSubmit={handleSubmit}>
 
                         {error && (
@@ -216,6 +221,11 @@ const Register = ({onSwitchToLogin}) => {
                     </div>
                 </div>
             </div>
+    
+)}
+
+
+            
         </div>
     );
 };

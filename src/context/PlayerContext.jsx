@@ -36,13 +36,18 @@ export const PlayerContextProvider = ({ children }) => {
     const [isMaximized , setIsMaximized ] = useState(false);
     const toggleMaximize = ()=>setIsMaximized(!isMaximized);
 
-    const playPlaylist = (songs, index = 0) => {
-        if (songs.length === 0) return;
-        setSongsQueue(songs);
-        setCurrentTrackIndex(index);
-        setTrack(songs[index]);
-        setPlayStatus(true);
-    }
+   // Inside PlayerContext.jsx - playPlaylist function
+const playPlaylist = (songs, index = 0) => {
+    if (!songs || songs.length === 0) return;
+    
+    // Ensure index is within current bounds
+    const safeIndex = index < songs.length ? index : 0; 
+    
+    setSongsQueue(songs);
+    setCurrentTrackIndex(safeIndex);
+    setTrack(songs[safeIndex]);
+    setPlayStatus(true);
+}
 
     const nextSong = () => {
         if (!songsQueue || songsQueue.length === 0) return;

@@ -143,7 +143,7 @@ try {
  */
 export const addSongToPlaylist = async (playlistId, songId) => {
     try {
-        // We use the same apiClient which already has your interceptors configured
+     
         const response = await apiClient.post(`/api/playlists/${playlistId}/songs/${songId}`);
         
         return {
@@ -156,6 +156,68 @@ export const addSongToPlaylist = async (playlistId, songId) => {
         return { 
             success: false, 
             message: error.response?.data?.message || 'Failed to add song to playlist' 
+        };
+    }
+};
+
+/**
+ * Remove a song from a specific playlist
+ * @param {string} playlistId 
+ * @param {string} songId 
+ */
+export const removeSongFromPlaylist = async (playlistId, songId) => {
+    try {
+        const response = await apiClient.delete(`/api/playlists/delete/${playlistId}/song/${songId}`)
+        return {
+            success: true,
+            message: 'Song deleted from playlist',
+            data: response.data
+        };
+    } catch (error) {
+        console.error("API Error deleting song:", error);
+        return { 
+            success: false, 
+            message: error.response?.data?.message || 'Failed to delete song from playlist' 
+        };
+    }
+
+};
+
+/**
+ * Verifies email via a clickable link (GET request)
+ * @param {string} email 
+ * @param {string} token 
+ */
+export const verifyViaLink = async (email, token) => {
+    try {
+        const response = await axios.get(`${API_BASE_URL}/api/auth/verify`, {
+            params: { email, token }
+        });
+        return { success: true, message: response.data };
+    } catch (error) {
+        return { 
+            success: false, 
+            message: error.response?.data || 'Verification failed' 
+        };
+    }
+};
+
+/**
+ * Verifies email via manual OTP entry (POST request)
+ * @param {string} email 
+ * @param {string} token 
+ */
+export const verifyManualOtp = async (email, token) => {
+    try {
+        const response = await axios.post(`${API_BASE_URL}/api/auth/verify`, {
+            email,
+            token
+        });
+        return { success: true, message: response.data };
+    } catch (error) {
+        return { 
+            success: false, 
+            message: error.response?.data || 'Invalid or expired code' 
         };
     }
 };

@@ -8,7 +8,7 @@ const DisplayAlbum = ({ album }) => {
   const { id } = useParams();
 
   const { albumsData, songsData } = useContext(PlayerContext);
-  const { playWithId } = useContext(PlayerContext);
+  const { playWithId, toggleMaximize } = useContext(PlayerContext);
 
   return album && albumsData ? (
     <>
@@ -44,7 +44,10 @@ const DisplayAlbum = ({ album }) => {
         .filter(song => song.album === album.name)
         .map((item, index) => (
           <div
-          onClick={() => playWithId(item.id)}
+            onClick={() => {
+              playWithId(item.id);
+              toggleMaximize();
+            }}
             className="grid grid-cols-3 sm:grid-cols-4 gap-2 p-2 items-center text-[#a7a7a7] hover:bg-[#ffffff2b] cursor-pointer"
             key={index}>
             <p className="text-white">
