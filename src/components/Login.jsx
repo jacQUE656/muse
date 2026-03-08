@@ -32,8 +32,10 @@ const Login = ({onSwitchToRegister}) => {
         toast.success("Welcome Back...");
        
       }else if (result.needsVerification) {
+        toast.error("Please verify your email before logging in.");
+        
         // Redirect to the verification page passing the email
-        navigate('/verify', { state: { email: email } });
+        //navigate('/verify', { state: { email: email } });
     } else {
         setError(result.message);
     }

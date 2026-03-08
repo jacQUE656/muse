@@ -81,7 +81,7 @@ const playPlaylist = (songs, index = 0) => {
         setPlayStatus(false);
     }
 
-    const play = () => {
+    const play = async () => {
         if (track) {
             audioRef.current.play();
             setPlayStatus(true);
@@ -111,8 +111,7 @@ const playPlaylist = (songs, index = 0) => {
         songsData.map(async (item, index) => {
             if (track.id === item.id && index < songsData.length - 1) {
                 setTrack(songsData[index + 1]);
-                await audioRef.current.play();
-                setPlayStatus(true);
+               await play();
             }
         });
     }

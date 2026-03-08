@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
+import EmailVerification from "./EmailVerifiation.jsx";
 
 const AuthWrapper = ({ children }) => {
 
-    const { isAuthenticted , loading } = useAuth();
+    const { isAuthenticted , loading , isEmailVerified , user } = useAuth();
     const [showRegister, setShowRegister] = useState(false);
 
     if (loading) {
@@ -30,6 +31,9 @@ const AuthWrapper = ({ children }) => {
         :(<Login onSwitchToRegister = {() => setShowRegister(true)}/>
     
     );
+    }
+    if (user &&!isEmailVerified) {
+        return <EmailVerification prefilledEmail={user}/>;
     }
     
     return children;

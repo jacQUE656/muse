@@ -222,4 +222,26 @@ export const verifyManualOtp = async (email, token) => {
     }
 };
 
+/**
+ * Resends the verification code to the user's email
+ * @param {string} email 
+ */
+export const resendOtp = async (email) => {
+    try {
+        // Using apiClient to benefit from the base URL and interceptors
+        const response = await apiClient.post('/api/auth/resend-otp', { email });
+        
+        return { 
+            success: true, 
+            message: response.data.message || 'Verification code resent!' 
+        };
+    } catch (error) {
+        console.error("API Error resending OTP:", error);
+        return { 
+            success: false, 
+            message: error.response?.data?.message || 'Failed to resend code' 
+        };
+    }
+};
+
 export default apiClient;

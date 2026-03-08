@@ -4,9 +4,9 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 export const API_BASE_URL = "http://localhost:2011";
-  export const getToken =()=>{
-        return token;
-    }
+export const getToken = () => {
+    return token;
+}
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
@@ -20,24 +20,26 @@ export const useAuth = () => {
 
 
 export const AuthProvider = ({ children }) => {
-    
+
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [loading, setLoading] = useState(false);
-     const [userId, setUserId] = useState('');
+    const [userId, setUserId] = useState('');
+    const [isEmailVerified, setIsEmalVerified] = useState(localStorage.getItem("isEmailVerified"))
     useEffect(() => {
 
         setLoading(true);
         const storedToken = localStorage.getItem("token");
         const storedUser = localStorage.getItem("userData");
         const storedUserId = localStorage.getItem("userId");
-
+        const storedVerify = localStorage.getItem("isEmailVerified")
         if (storedToken && storedUser) {
             setToken(storedToken);
             setUser(storedUser);
             setUserId(storedUserId);
+            setIsEmalVerified(storedVerify);
         }
-         setLoading(false);
+        setLoading(false);
 
 
     }, []);
@@ -47,6 +49,13 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post(`${API_BASE_URL}/api/auth/register`, { firstname, lastname, phonenumber, email, password })
 
             if (response.status === 200) {
+
+                setIsEmalVerified(response.data.isEmailVerified);
+                setUser(response.data.user);
+                localStorage.setItem("userData", response.data.user);
+                
+                localStorage.setItem("isEmailVerified", response.data.isEmailVerified);
+
                 return {
                     success: true,
                     message: 'Registraton successful'
@@ -75,8 +84,9 @@ export const AuthProvider = ({ children }) => {
                 setUser(response.data.user);
                 setUserId(response.data.user_id)
                 localStorage.setItem("token", response.data.token);
-                localStorage.setItem("userData",response.data.user);
-                localStorage.setItem("userId",response.data.user_id);
+                localStorage.setItem("userData", response.data.user);
+                localStorage.setItem("userId", response.data.user_id);
+                localStorage.setItem("isEmailVerified", response.data.isEmailVerified);
                 //saveToken(response.data.token);
 
                 return {
@@ -90,27 +100,27 @@ export const AuthProvider = ({ children }) => {
                 };
             }
 
-        }catch (error) {
-        // Check if the server says the user is not verified
-        if (error.response?.status === 403) {
-            return { 
-                success: false, 
-                message: "Account not verified. Please verify your email.",
-                needsVerification: true 
+        } catch (error) {
+            // Check if the server says the user is not verified
+            if (error.response?.status === 403) {
+                return {
+                    success: false,
+                    message: "Account not verified. Please verify your email.",
+                    needsVerification: true
+                };
+            }
+            return {
+                success: false,
+                message: error.response?.data?.message || "Login failed"
             };
         }
-        return { 
-            success: false, 
-            message: error.response?.data?.message || "Login failed" 
-        };
-    }
     }
 
     const isAuthenticted = () => {
         return !!token && !!user;
     }
 
-    const logout = ()=>{
+    const logout = () => {
         // clear cookies
         setToken(null);
         setUser(null);
@@ -118,10 +128,11 @@ export const AuthProvider = ({ children }) => {
         localStorage.removeItem('token');
         localStorage.removeItem("userData");
         localStorage.removeItem("userId");
-       
+        localStorage.removeItem("isEmailVerified");
+
     }
-  
-  
+
+
     const contextValue = {
         register,
         login,
@@ -131,7 +142,8 @@ export const AuthProvider = ({ children }) => {
         user,
         token,
         userId,
-        
+        isEmailVerified
+
     }
     return (
         <AuthContext.Provider value={contextValue}>

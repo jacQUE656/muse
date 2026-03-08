@@ -21,20 +21,21 @@ const Player = () => {
       <div className="flex flex-col items-center gap-1 m-auto">
         <div className="flex gap-4">
           <Shuffle onClick={()=>setIsShuffle(!isShuffle)}
-           className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-          <SkipBack onClick={previous} 
           className={`w-4 h-5 cursor-pointer transition-colors ${isShuffle ? 'text-green-500': 'text-gray-400 hover:text-white'}` }/>
+          <SkipBack onClick={previous} 
+             className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
           {playStatus ? (
-            <Pause onClick={pause} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+            <Pause onClick={pause}
+             className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
 
           ) : (
             <Play onClick={play}
-                className={`w-4 h-5 cursor-pointer transition-colors ${isRepeat ? 'text-green-500': 'text-gray-400 hover:text-white'}` } />
+             className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
           )}
           <SkipForward onClick={next} className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
           <Repeat 
           onClick={()=>setIsRepeat(!isRepeat)}
-          className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
+                className={`w-4 h-5 cursor-pointer transition-colors ${isRepeat ? 'text-green-500': 'text-gray-400 hover:text-white'}` } />
 
         </div>
         <div className="flex items-center gap-5">
