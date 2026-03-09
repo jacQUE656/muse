@@ -10,35 +10,49 @@ import DisplayPlaylist from "./DisplayPlaylist";
 const Display = () => {
   const { albumsData } = useContext(PlayerContext);
   const location = useLocation();
-  const isAlbum = location.pathname.includes("album"); {/* CHECK IF WE ARE IN ALBUM PAGE*/ }
-  const albumId = isAlbum ? location.pathname.split("/").pop() : "";
-  const displayRef = useRef(); 
-  const bgColour = isAlbum ? (albumsData?.find(x => x.id == albumId)?.bgColor || '#121212') : ('#121212');
+  
+  // Logic helpers
+  const isAlbum = location.pathname.includes("album");
+  const albumId = location.pathname.split("/").pop();
+  const displayRef = useRef(null);
+  
+  const bgColour = isAlbum 
+    ? (albumsData?.find((x) => x.id == albumId)?.bgColor || "#121212") 
+    : "#121212";
+
   useEffect(() => {
-
-    if (isAlbum) {
-    displayRef.current.style.background = `linear-gradient(${bgColour}, #121212)`;
-    } else{
-      displayRef.current.style.background = '#121212';
+    if (displayRef.current) {
+      displayRef.current.style.background = isAlbum 
+        ? `linear-gradient(${bgColour}, #121212 80%)` 
+        : "#121212";
     }
-  }, [isAlbum , bgColour])
-  return (
-    <div ref={displayRef} className="w-[100%] m-2 bg-[#121212] text-white lg:w-[75%] lg:ml-0 flex flex-col">
-      {/* STICK NAV BAR */}
-      <div  className="sticky top-0 z-10 bg-[#121212]/95 backdrop-blur-sm border-b border-gray-800/60 px-6 pt-4 pb-2">
-        <NavBar />  
-      </div> 
-         {/* Scrollable content */}
-        <div className="flex-1 px-6 pb-4 overflow-auto">
+  }, [isAlbum, bgColour]);
 
+  return (
+    <div 
+      ref={displayRef} 
+      className="w-full h-screen overflow-hidden flex flex-col bg-[#121212] lg:w-[75%]"
+    >
+      {/* Sticky NavBar: Stays at the top of the scrollable area */}
+      <div className="sticky top-0 z-20 w-full bg-[#121212]/80 backdrop-blur-md border-b border-white/5">
+        <div className="px-4 py-3 md:px-6">
+          <NavBar />
+        </div>
+      </div>
+
+      {/* Main Content: Scrollable overflow */}
+      <main className="flex-1 overflow-y-auto overflow-x-hidden scrollbar-thin">
+        <div className="p-4 md:p-6 lg:p-8">
           <Routes>
-            <Route path="/" element={<DisplayHome />} />
+            <Route path="/home" element={<DisplayHome />} />
             <Route path="/albums/:id" element={<DisplayAlbum album={albumsData?.find(x => x.id == albumId)} />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/playlist/:id" element={<DisplayPlaylist/>} />
+            <Route path="/playlist/:id" element={<DisplayPlaylist />} />
           </Routes>
         </div>
+      </main>
     </div>
-  )
-}
+  );
+};
+
 export default Display;

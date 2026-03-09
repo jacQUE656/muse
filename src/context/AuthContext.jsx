@@ -116,7 +116,7 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
-    const isAuthenticted = () => {
+    const isAuthenticated = () => {
         return !!token && !!user;
     }
 
@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
     const contextValue = {
         register,
         login,
-        isAuthenticted,
+        isAuthenticated,
         loading,
         logout,
         user,

@@ -2,40 +2,40 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import Login from "./Login.jsx";
 import Register from "./Register.jsx";
-import EmailVerification from "./EmailVerifiation.jsx";
+
+import EmailVerification from "./EmailVerifiation.jsx"; 
 
 const AuthWrapper = ({ children }) => {
-
-    const { isAuthenticted , loading , isEmailVerified , user } = useAuth();
+ 
+    const { isAuthenticated, loading, isEmailVerified, user } = useAuth();
     const [showRegister, setShowRegister] = useState(false);
 
     if (loading) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animated-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4">
-                        <p className="text-white text-lg">
-                            Loading
-                        </p>
-                    </div>
+                   
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+                    <p className="text-white text-lg">Loading...</p>
                 </div>
             </div>
-        )
+        );
     }
 
-    if (!isAuthenticted()) {
-        return showRegister ? (<Register onSwitchToLogin = {() => setShowRegister(false)}/>
+   
+    if (!isAuthenticated()) {
+        return showRegister ? (
+            <Register onSwitchToLogin={() => setShowRegister(false)} />
+        ) : (
+            <Login onSwitchToRegister={() => setShowRegister(true)} />
+        );
+    }
 
-        )
-        
-        :(<Login onSwitchToRegister = {() => setShowRegister(true)}/>
     
-    );
-    }
-    if (user &&!isEmailVerified) {
-        return <EmailVerification prefilledEmail={user}/>;
-    }
-    
+    // if (isAuthenticated() && !isEmailVerified) {
+    //     return <EmailVerification prefilledEmail={user?.email} />;
+    // }
+
     return children;
 }
 

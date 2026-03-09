@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
-// Ensure you add resendOtp to your ApiService exports
 import { verifyManualOtp, verifyViaLink, resendOtp } from '../services/ApiService.js'; 
 import toast from 'react-hot-toast';
 
@@ -9,11 +8,12 @@ const EmailVerification = ({ prefilledEmail = '' }) => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    // Unified state for email and token
     const [email, setEmail] = useState(prefilledEmail || searchParams.get('email') || location.state?.email || '');
     const [token, setToken] = useState(searchParams.get('token') || '');
-    const [status, setStatus] = useState('idle');
+    const [status, setStatus] = useState('idle'); // idle | loading | success | error
     
-    // Countdown state
+    // Countdown state for resend
     const [countdown, setCountdown] = useState(60);
     const [canResend, setCanResend] = useState(false);
 
@@ -30,24 +30,28 @@ const EmailVerification = ({ prefilledEmail = '' }) => {
         return () => clearInterval(timer);
     }, [countdown]);
 
-    // Auto-verify if tokens are present in URL
+    // Auto-verify logic triggered only when token/email are present and status is idle
     useEffect(() => {
         if (!email) {
             toast.error("Session expired. Please log in or register again.");
             navigate('/');
+            return;
         }
-        if (email && token) {
+        
+        if (email && token && status === 'idle') {
             handleVerification(true);
         }
-    }, [email, token]);
+    }, [email, token, status, navigate]);
 
     const handleVerification = async (isAuto = false) => {
         if (!email || !token) {
-            toast.error("Email and OTP are required.");
+            toast.error("Email and OTP/Token are required.");
             return;
         }
 
         setStatus('loading');
+        
+        // Call appropriate service based on verification method
         const response = isAuto 
             ? await verifyViaLink(email, token) 
             : await verifyManualOtp(email, token);
@@ -55,7 +59,11 @@ const EmailVerification = ({ prefilledEmail = '' }) => {
         if (response.success) {
             setStatus('success');
             toast.success("Verified successfully! Redirecting...");
-            setTimeout(() => navigate('/'), 2000);
+            
+            // Clean up URL to prevent auto-re-verification on refresh
+            window.history.replaceState({}, document.title, window.location.pathname);
+            
+            setTimeout(() => navigate('/'), 1000);
         } else {
             setStatus('error');
             toast.error(response.message || "Verification failed.");
@@ -68,7 +76,7 @@ const EmailVerification = ({ prefilledEmail = '' }) => {
         const response = await resendOtp(email);
         if (response.success) {
             toast.success("New code sent to your email!");
-            setCountdown(60); // Reset timer
+            setCountdown(60);
             setCanResend(false);
         } else {
             toast.error(response.message || "Failed to resend code.");
@@ -79,10 +87,10 @@ const EmailVerification = ({ prefilledEmail = '' }) => {
         <div className="max-w-md w-full bg-gray-900/80 p-8 rounded-2xl shadow-2xl border border-gray-600 text-center">
             <h2 className="text-2xl font-bold text-white mb-6">Verify Your Account</h2>
             
-            {status === 'loading' && <p className="text-gray-300 mb-4">Verifying code...</p>}
+            {status === 'loading' && <p className="text-gray-300 mb-4">Verifying...</p>}
 
             {status === 'success' ? (
-                <div className="text-green-400 font-semibold">Verification successful! You can now sign in.</div>
+                <div className="text-green-400 font-semibold p-4">Verification successful! Redirecting...</div>
             ) : (
                 <div className="space-y-4">
                     <form onSubmit={(e) => { e.preventDefault(); handleVerification(false); }} className="space-y-4">
@@ -98,7 +106,7 @@ const EmailVerification = ({ prefilledEmail = '' }) => {
                             type="text" 
                             value={token}
                             onChange={(e) => setToken(e.target.value)}
-                            placeholder="Enter 6-digit OTP" 
+                            placeholder="Enter 6-digit OTP or Token" 
                             className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white"
                             required 
                         />

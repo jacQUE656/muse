@@ -68,7 +68,7 @@ export const addPlaylist = async (name, description, userId) => {
 
 export const getUserPlaylists = async (userId) => {
     try {
-        const response = await apiClient.get(`/api/playlists/user/${userId}`, { userId })
+        const response = await apiClient.get(`/api/playlists/user/${userId}`);
 
 
         return {
@@ -190,15 +190,13 @@ export const removeSongFromPlaylist = async (playlistId, songId) => {
  */
 export const verifyViaLink = async (email, token) => {
     try {
-        const response = await axios.get(`${API_BASE_URL}/api/auth/verify`, {
+        // Use apiClient so it uses baseURL
+        const response = await apiClient.get('/api/auth/verify', {
             params: { email, token }
         });
         return { success: true, message: response.data };
     } catch (error) {
-        return { 
-            success: false, 
-            message: error.response?.data || 'Verification failed' 
-        };
+        return { success: false, message: error.response?.data || 'Verification failed' };
     }
 };
 
@@ -209,16 +207,10 @@ export const verifyViaLink = async (email, token) => {
  */
 export const verifyManualOtp = async (email, token) => {
     try {
-        const response = await axios.post(`${API_BASE_URL}/api/auth/verify`, {
-            email,
-            token
-        });
+        const response = await apiClient.post('/api/auth/verify', { email, token });
         return { success: true, message: response.data };
     } catch (error) {
-        return { 
-            success: false, 
-            message: error.response?.data || 'Invalid or expired code' 
-        };
+        return { success: false, message: error.response?.data || 'Invalid or expired code' };
     }
 };
 
@@ -244,4 +236,94 @@ export const resendOtp = async (email) => {
     }
 };
 
+/**
+ * Downloads a song by streaming the data through the backend proxy.
+ * Includes a callback for progress tracking.
+ * @param {number|string} id - The song ID
+ * @param {string} fileName - The desired name for the saved file
+ * @param {function} onProgress - Callback function (progress) => {}
+ */
+export const downloadSong = async (id, fileName, onProgress) => {
+    try {
+        const response = await apiClient.get(`/api/music/download/${id}`, {
+            responseType: 'blob', // Critical for binary data
+            onDownloadProgress: (progressEvent) => {
+                if (onProgress && progressEvent.total) {
+                    const percentage = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    onProgress(percentage);
+                }
+            }
+        });
+
+        // 1. Create a blob from the response data
+        const blob = new Blob([response.data], { type: 'audio/mpeg' });
+        
+        // 2. Create a temporary URL for the blob
+        const url = window.URL.createObjectURL(blob);
+        
+        // 3. Create a virtual anchor element to trigger the download
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${fileName || 'song'}.mp3`);
+        
+        // 4. Append, click, and cleanup
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        return { success: true, message: 'Download started' };
+        
+    } catch (error) {
+        console.error("Download Error:", error);
+        return {
+            success: false,
+            message: error.response?.data?.message || 'Failed to download file'
+        };
+    }
+};
+
+/**
+ * Triggers the "forgot password" email
+ * @param {string} email 
+ */
+export const forgotPassword = async (email) => {
+    try {
+        // We use apiClient here to maintain consistency
+        const response = await apiClient.post('/api/auth/reset-password', { email });
+        return { 
+            success: true, 
+            message: response.data || 'If an account exists, a reset link has been sent.' 
+        };
+    } catch (error) {
+        return { 
+            success: false, 
+            message: error.response?.data?.message || 'Failed to send reset link.' 
+        };
+    }
+};
+
+/**
+ * Submits the new password using the reset token
+ * @param {string} email 
+ * @param {string} token 
+ * @param {string} newPassword 
+ */
+export const resetPasswordService = async (email, token, newPassword) => {
+    try {
+        const response = await apiClient.post('/api/auth/verify/reset-password', 
+            { newPassword }, // Match your DTO structure
+            { params: { email, token } } // Pass token/email as query params
+        );
+        return { 
+            success: true, 
+            message: 'Password reset successfully!' 
+        };
+    } catch (error) {
+        return { 
+            success: false, 
+            message: error.response?.data?.message || 'Failed to reset password.' 
+        };
+    }
+};
 export default apiClient;

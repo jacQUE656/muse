@@ -1,16 +1,45 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "../context/PlayerContext";
-import { ListMusic, ListMusicIcon, Maximize2, Mic, Minimize2, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Speaker, Volume2 } from "lucide-react";
+import { Download, ListMusic, ListMusicIcon, Maximize2, Mic, Minimize2, Pause, Play, Repeat, Shuffle, SkipBack, SkipForward, Speaker, Volume2 } from "lucide-react";
+import { downloadSong } from "../services/ApiService";
 
 
 const Player = () => {
 
   const { track, seekBar, seekBg, playStatus, play, pause, time, previous, next, seekSong, isRepeat,isShuffle,setIsRepeat, setIsShuffle,toggleMaximize  } = useContext(PlayerContext);
 
+const [isDownloading, setIsDownloading] = useState(false);
+  const [downloadProgress, setDownloadProgress] = useState(0);
 
+  const handleDownload = async () => {
+    if (!track || isDownloading) return;
+
+    setIsDownloading(true);
+    // track.id and track.name come from your context
+    const result = await downloadSong(track.id, track.name, (percent) => {
+      setDownloadProgress(percent);
+    });
+
+    if (!result.success) {
+      alert(result.message);
+    }
+
+    // Reset progress after a delay so user sees completion
+    setTimeout(() => {
+      setIsDownloading(false);
+      setDownloadProgress(0);
+    }, 1500);
+  };
 
   return track ? (
     <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">
+      {/* Visual Progress Bar overlay at the top of the player during download */}
+      {isDownloading && (
+        <div 
+          className="absolute top-0 left-0 h-[2px] bg-green-500 transition-all duration-300 z-50" 
+          style={{ width: `${downloadProgress}%` }}
+        />
+      )}
       <div className="hidden lg:flex items-center gap-4">
         <img src={track.image} alt="Album" className="w-12" />
         <div>
@@ -52,11 +81,11 @@ const Player = () => {
         </div>
       </div>
       <div className="hidden lg:flex items-center gap-2 opacity-75">
+        <Download 
+          onClick={handleDownload}
+          className={`w-4 h-5 cursor-pointer transition-colors mr-2 ${isDownloading ? 'text-green-500 animate-pulse' : 'text-white hover:text-green-500'}`} 
+        />
         <ListMusic className="w-4 h-5 cursor-pointer text-white hover:text-green-500 transition-colors" />
-        <Mic className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-        <Speaker className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-        <Volume2 className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
-       {/* <Minimize2 className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" /> */}
         <Maximize2 onClick={toggleMaximize} className="w-4 h-4 cursor-pointer text-white hover:text-green-500 transition-colors" />
       </div>
 

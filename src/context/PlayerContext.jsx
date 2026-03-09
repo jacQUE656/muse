@@ -36,13 +36,10 @@ export const PlayerContextProvider = ({ children }) => {
     const [isMaximized , setIsMaximized ] = useState(false);
     const toggleMaximize = ()=>setIsMaximized(!isMaximized);
 
-   // Inside PlayerContext.jsx - playPlaylist function
+   
 const playPlaylist = (songs, index = 0) => {
     if (!songs || songs.length === 0) return;
-    
-    // Ensure index is within current bounds
     const safeIndex = index < songs.length ? index : 0; 
-    
     setSongsQueue(songs);
     setCurrentTrackIndex(safeIndex);
     setTrack(songs[safeIndex]);
@@ -88,33 +85,44 @@ const playPlaylist = (songs, index = 0) => {
         }
     }
 
-    const playWithId = async (id) => {
-        const foundTrack = songsData.find(item => item.id === id);
-        if (foundTrack) {
-            setTrack(foundTrack);
-            await audioRef.current.play();
+
+const playWithId = async (id) => {
+    const foundTrack = songsData.find(item => item.id === id);
+    if (foundTrack) {
+        setTrack(foundTrack);
+        setTimeout(() => {
+            audioRef.current.play().catch(e => console.error("Playback failed", e));
             setPlayStatus(true);
+        }, 100);
+    }
+}
+
+   // Optimized version
+const previous = async () => {
+    const currentIndex = songsData.findIndex(item => item.id === track.id);
+    if (currentIndex > 0) {
+        setTrack(songsData[currentIndex - 1]);
+        setCurrentTrackIndex(currentIndex - 1);
+        setPlayStatus(true);
+        // Ensure the audio element plays the new source
+        setTimeout(() => audioRef.current?.play(), 100);
+    }
+};
+
+const next = async () => {
+    // If we have a queue, use nextSong()
+    if (songsQueue.length > 0) {
+        nextSong();
+    } else {
+        // Fallback to songsData logic
+        const currentIndex = songsData.findIndex(item => item.id === track.id);
+        if (currentIndex < songsData.length - 1) {
+            setTrack(songsData[currentIndex + 1]);
+            setCurrentTrackIndex(currentIndex + 1);
+            setTimeout(() => audioRef.current.play(), 100);
         }
     }
-
-    const previous = async () => {
-        songsData.map(async (item, index) => {
-            if (track.id === item.id && index > 0) {
-                setTrack(songsData[index - 1]);
-                await audioRef.current.play();
-                setPlayStatus(true);
-            }
-        });
-    }
-
-    const next = async () => {
-        songsData.map(async (item, index) => {
-            if (track.id === item.id && index < songsData.length - 1) {
-                setTrack(songsData[index + 1]);
-               await play();
-            }
-        });
-    }
+};
 
     const seekSong = async (e) => {
         if (audioRef.current.duration) {
@@ -218,7 +226,7 @@ const playPlaylist = (songs, index = 0) => {
                         second: Math.floor(audio.currentTime % 60),
                         minute: Math.floor(audio.currentTime / 60)
                     },
-                    totaltime: {
+                    totalTime: {
                         second: Math.floor(audio.duration % 60),
                         minute: Math.floor(audio.duration / 60)
                     }

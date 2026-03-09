@@ -12,7 +12,7 @@ const DisplayHome = () => {
     <>
 
       <div className="mb-4">
-        <h1 className="my-5 font-bold text-2xl">
+        <h1 className="my-5 font-bold text-2xl text-white">
           Featured Charts
         </h1>
         <div className="flex overflow-auto">
@@ -32,7 +32,7 @@ const DisplayHome = () => {
         </div>
       </div>
       <div className="mb-4">
-        <h1 className="my-5 font-bold text-2xl">
+        <h1 className="my-5 font-bold text-2xl text-white">
         Today's biggest hits
         </h1>
         <div className="flex overflow-auto">
