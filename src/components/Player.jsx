@@ -32,7 +32,7 @@ const [isDownloading, setIsDownloading] = useState(false);
   };
 
   return track ? (
-    <div className="h-[10%] bg-black flex justify-between items-center text-white px-4">
+    <div className="h-[10%] bg-black flex justify-between items-center text-white px-4 sticky">
       {/* Visual Progress Bar overlay at the top of the player during download */}
       {isDownloading && (
         <div 

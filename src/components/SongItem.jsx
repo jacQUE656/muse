@@ -5,25 +5,24 @@ import { Play } from "lucide-react";
 const SongItem = ({ name, image, description, id }) => {
   const { playWithId, toggleMaximize } = useContext(PlayerContext);
 
-  return (
+return (
     <div
       onClick={() => {
         playWithId(id);
         toggleMaximize();
       }}
-      // Removed fixed min-width. Added 'group' for hover effects.
-      className="p-3 m-5 rounded-lg cursor-pointer hover:bg-white/10 bg-white/5 transition-all duration-300 group flex flex-col h-50"
+      // Changed: removed w-50 h-50, set to w-full to fill grid cell
+      className="p-3 my-4 w-full rounded-lg cursor-pointer hover:bg-white/10 bg-white/5 transition-all duration-300 group flex flex-col"
     >
-      {/* Image Container */}
-      <div className="relative aspect-square mb-3 w-50">
+      {/* Image Container: w-32 on mobile, w-full on larger screens */}
+      <div className="relative aspect-square mb-3 w-32 md:w-full mx-auto md:mx-0">
         <img
           src={image}
           alt={name}
-          // Changed to w-full h-full with object-cover for perfect scaling
           className="rounded-md w-full h-full object-cover shadow-lg group-hover:shadow-2xl transition-shadow"
         />
         
-        {/* Hover Play Button - Hidden on mobile, shows on hover for desktop */}
+        {/* Play Button - remains hidden on mobile */}
         <div className="absolute bottom-2 right-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 hidden md:block">
           <div className="bg-green-500 p-3 rounded-full shadow-xl">
             <Play className="w-5 h-5 text-black fill-black" />
@@ -32,7 +31,7 @@ const SongItem = ({ name, image, description, id }) => {
       </div>
 
       {/* Text Content */}
-      <div className="flex flex-col flex-grow">
+      <div className="flex flex-col flex-grow text-center md:text-left">
         <p className="font-bold text-white truncate text-sm md:text-base mb-1">
           {name}
         </p>

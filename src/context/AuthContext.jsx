@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 export const AuthContext = createContext();
 export const API_BASE_URL = "https://muse-backend-1.onrender.com";
+//export const API_BASE_URL = "http://localhost:2011";
 export const getToken = () => {
     return token;
 }
