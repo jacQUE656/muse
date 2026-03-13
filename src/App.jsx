@@ -22,7 +22,7 @@ const App = () => {
     <>
       <Toaster />
 <Routes>
-  <Route path="/muse" element={<MuseLandingPage />} />
+  <Route path="/" element={<MuseLandingPage />} />
   <Route path="/reset-password" element={<ResetPassword />} />
   <Route path="/verify-email" element={<EmailVerification />} />
   <Route path="/update-password" element={<PasswordUpdate />} />
