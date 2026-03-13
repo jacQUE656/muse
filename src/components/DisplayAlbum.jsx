@@ -19,14 +19,14 @@ const DisplayAlbum = ({ album }) => {
         />
         <div className="flex flex-col">
           <p className="text-sm font-semibold uppercase tracking-wider text-gray-400">Playlist</p>
-          <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold mt-2 mb-4">
+          <h2 className="text-3xl sm:text-5xl md:text-7xl font-bold mt-2 mb-4 text-white">
             {album.name}
           </h2>
           <h4 className="text-gray-300 text-sm sm:text-base line-clamp-2 md:line-clamp-none">
             {album.description}
           </h4>
-          <div className="mt-3 flex items-center justify-center md:justify-start gap-2 text-sm">
-            <img src={assets.logo} alt="logo" className="w-5" />
+          <div className="mt-3 flex items-center justify-center md:justify-start gap-2 text-sm text-green-600">
+            <img src={assets.logo2} alt="logo" className="w-5" />
             <span className="font-bold">Musify</span>
             <span className="hidden sm:inline">• 1,23,456 likes</span>
             <span className="font-bold ml-1">{songsData.filter(s => s.album === album.name).length} Songs,</span>
@@ -79,7 +79,7 @@ const DisplayAlbum = ({ album }) => {
 
               {/* Date hidden on mobile */}
               <p className="text-[13px] hidden sm:block">
-                5 days ago
+                {item.dateAdded}
               </p>
 
               {/* Duration right aligned on desktop, center on mobile */}

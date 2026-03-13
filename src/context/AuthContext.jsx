@@ -67,14 +67,18 @@ export const AuthProvider = ({ children }) => {
                     message: response.data.message || 'Registraton failed'
                 }
             }
-        } catch (error) {
-            return {
-                success: false,
-                message: error.response.data || 'Network error try again later.'
-            }
+        }  catch (error) {
+    // This logs the actual validation message sent by your backend
+    console.log("Full error response:", error.response?.data); 
+    
+    return {
+        success: false,
+        message: error.response?.data?.message || 'Registration failed'
+    };
+}
 
         }
-    }
+    
 
     const login = async (email, password) => {
         try {
