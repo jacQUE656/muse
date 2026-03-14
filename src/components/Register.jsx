@@ -66,7 +66,7 @@ const Register = ({onSwitchToLogin}) => {
           <div className="flex items-center justify-center">
             <img src={assets.logo2} alt="Musify_logo" className="w-12 h-12 md:w-16 md:h-16 object-contain" />
             <h1 className="ml-3 text-2xl md:text-3xl font-bold text-white tracking-tight">
-              Musify
+              MUSE
             </h1>
           </div>
         </div>

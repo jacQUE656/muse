@@ -54,7 +54,7 @@ const Login = ({ onSwitchToRegister }) => {
               {/* Responsive logo size */}
               <img src={assets.logo2} alt="Musify_logo" className="w-16 h-16 md:w-20 md:h-20 object-contain" />
               <h1 className="ml-3 text-3xl md:text-4xl font-black text-white tracking-tighter italic">
-                Musify
+                MUSE
               </h1>
             </div>
           </div>
