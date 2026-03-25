@@ -28,8 +28,6 @@ const OAuth2RedirectHandler = () => {
             };
 
             loginWithToken(token, fakeResponse); 
-            
-            toast.success("Social login successful! Welcome to MUSE.");
             navigate('/home'); 
         } else {
             toast.error("Google login failed. Please try again.");

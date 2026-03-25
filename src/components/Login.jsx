@@ -53,7 +53,7 @@ const Login = ({ onSwitchToRegister }) => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-900 via-black to-green-900 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full space-y-8 animate-in fade-in zoom-in duration-300">
-        
+
         {/* HEADER & LOGO */}
         <div className="text-center">
           <div className="flex flex-col items-center justify-center mb-6">
@@ -70,7 +70,7 @@ const Login = ({ onSwitchToRegister }) => {
 
         {/* LOGIN CARD */}
         <div className="bg-gray-900/60 backdrop-blur-xl rounded-3xl p-6 md:p-10 shadow-2xl border border-white/10">
-          
+
           {/* GOOGLE BUTTON */}
           <button
             onClick={handleGoogleLogin}
@@ -97,7 +97,7 @@ const Login = ({ onSwitchToRegister }) => {
                 {error}
               </div>
             )}
-            
+
             {/* EMAIL FIELD */}
             <div className="relative">
               <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 ml-1">
@@ -105,7 +105,7 @@ const Login = ({ onSwitchToRegister }) => {
               </label>
               <div className="relative">
                 <Mail className="absolute left-4 top-3.5 text-gray-500" size={18} />
-                <input 
+                <input
                   type="email"
                   required
                   className="block w-full pl-12 pr-4 py-3.5 border border-gray-700 rounded-xl bg-gray-800/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all text-sm"
@@ -123,7 +123,7 @@ const Login = ({ onSwitchToRegister }) => {
               </label>
               <div className="relative">
                 <Lock className="absolute left-4 top-3.5 text-gray-500" size={18} />
-                <input 
+                <input
                   type="password"
                   required
                   className="block w-full pl-12 pr-4 py-3.5 border border-gray-700 rounded-xl bg-gray-800/50 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 transition-all text-sm"
@@ -159,14 +159,14 @@ const Login = ({ onSwitchToRegister }) => {
           <div className="mt-8 text-center pt-6 border-t border-white/5">
             <p className="text-sm text-gray-500">
               Don't have an account?{' '}
-            <Link 
-  to="/register" 
-  className="text-green-400 hover:text-green-300 font-bold transition-colors"
-  onClick={onSwitchToRegister}
->
-  Sign Up
-</Link>
-           
+              <Link
+                to="/register"
+                className="text-green-400 hover:text-green-300 font-bold transition-colors"
+                onClick={onSwitchToRegister}
+              >
+                Sign Up
+              </Link>
+
             </p>
           </div>
         </div>
