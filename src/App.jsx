@@ -13,6 +13,7 @@ import PasswordUpdate from "./components/PasswordUpdate.jsx";
 import MuseLandingPage from "./components/MuseLandingPage.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
+import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler.jsx";
 
 const App = () => {
 
@@ -28,6 +29,7 @@ const App = () => {
   <Route path="/update-password" element={<PasswordUpdate />} />
   <Route path="/login" element={<Login/>}/>
   <Route path="/register" element={<Register/>}/>
+  <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
 
 <Route path="*" element={
   <AuthWrapper>

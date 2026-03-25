@@ -45,6 +45,18 @@ export const AuthProvider = ({ children }) => {
 
     }, []);
 
+
+const loginWithToken = (token, responseData) => {
+    setToken(token);
+    setUser(responseData.user.email); 
+    setUserId(responseData.user.id);
+    setIsEmalVerified(responseData.user.isEmailVerified);
+
+    localStorage.setItem("token", token);
+    localStorage.setItem("userData", responseData.user.email);
+    localStorage.setItem("userId", responseData.user.id);
+};
+
     const register = async (firstname, lastname, phonenumber, email, password) => {
         try {
             const response = await axios.post(`${API_BASE_URL}/api/auth/register`, { firstname, lastname, phonenumber, email, password })
@@ -147,7 +159,8 @@ export const AuthProvider = ({ children }) => {
         user,
         token,
         userId,
-        isEmailVerified
+        isEmailVerified,
+        loginWithToken
 
     }
     return (
