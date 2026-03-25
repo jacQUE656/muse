@@ -46,7 +46,7 @@ const Display = () => {
         <div className="p-4 md:p-6 lg:p-8">
           <Routes>
             {/* Note: Paths here are relative to the parent /home/* route */}
-            <Route path="/" element={<DisplayHome />} />
+            <Route path="/home" element={<DisplayHome />} />
             <Route path="/albums/:id" element={<DisplayAlbum album={albumsData?.find(x => x.id == albumId)} />} />
             <Route path="/search" element={<Search />} />
             <Route path="/playlist/:id" element={<DisplayPlaylist />} />

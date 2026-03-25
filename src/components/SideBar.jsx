@@ -45,7 +45,9 @@ const SideBar = () => {
                 <div className="px-1">
                     {!showSearchInput ? (
                         <div
-                            onClick={handleSearchClick}
+                            onClick={{navigate: () => navigate('/search')
+                                , handleSearchClick
+                            }}
                             className="flex items-center gap-4 px-2 py-3 hover:bg-white/5 rounded-lg transition-all cursor-pointer group"
                         >
                             <Search className="w-6 h-6 text-gray-400 group-hover:text-green-500" />
