@@ -34,43 +34,49 @@ const App = () => {
         <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
 
         {/* Authenticated App Routes */}
-        <Route path="*" element={
-          <AuthWrapper>
-            {isMaximized && <MaximizePlayerOverlay />}
+     <Route path="*" element={
+      
+  <AuthWrapper>
+    {isMaximized && <MaximizePlayerOverlay />}
+    
+    <div className="h-screen bg-black flex flex-col overflow-hidden">
+      
+      {/* WRAPPER FOR SIDEBAR + MAIN CONTENT */}
+      <div className="flex flex-1 overflow-hidden">
+        
+        {/* LEFT: SIDEBAR (Visible only on desktop) */}
+        <aside className="hidden md:block w-[250px] lg:w-[300px] h-full p-2 bg-black">
+          <SideBar />
+        </aside>
 
-            <div className="h-screen bg-black flex flex-col overflow-hidden">
-              <div className="flex flex-1 overflow-hidden">
-                {/* DESKTOP SIDEBAR: Only visible on md+ screens */}
-                <div className="hidden md:block md:w-[90px] lg:w-[25%] h-full">
-                  <SideBar />
-                </div>
+        {/* RIGHT: MAIN CONTENT AREA */}
+        <main className="flex-1 h-full overflow-y-auto bg-[#121212] md:rounded-lg md:m-2 custom-scrollbar">
+          <Routes>
+            <Route path="/home" element={<Display />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/search" element={<Display />} /> {/* Or Search component */}
+            <Route path="*" element={<Display />} />
+          </Routes>
+        </main>
+      </div>
 
-                {/* MAIN CONTENT AREA: Switches between Home/Search/Library */}
-                <div className="flex-1 overflow-y-auto">
-                  <Routes>
-                    <Route path="/library" element={<Library />} />
-                    <Route path="*" element={<Display />} /> 
-                  </Routes>
-                </div>
-              </div>
+      {/* BOTTOM: PLAYER */}
+      <footer className="h-auto pb-[75px] md:pb-0 bg-black border-t border-white/5">
+        <Player />
+      </footer>
 
-              {/* PLAYER AREA */}
-              <div className="pb-[75px] md:pb-0">
-                <Player />
-              </div>
+      {/* MOBILE ONLY NAVIGATION */}
+      <MobileNav />
 
-              {/* MOBILE NAV: Only visible on small screens */}
-              <MobileNav />
-
-              <audio
-                ref={audioRef}
-                src={track ? track.file : null}
-                preload="auto"
-                onEnded={next}
-              ></audio>
-            </div>
-          </AuthWrapper>
-        } />
+      <audio
+        ref={audioRef}
+        src={track ? track.file : null}
+        preload="auto"
+        onEnded={next}
+      ></audio>
+    </div>
+  </AuthWrapper>
+} />
       </Routes>
     </>
   );
