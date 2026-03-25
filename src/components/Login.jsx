@@ -159,12 +159,14 @@ const Login = ({ onSwitchToRegister }) => {
           <div className="mt-8 text-center pt-6 border-t border-white/5">
             <p className="text-sm text-gray-500">
               Don't have an account?{' '}
-              <button 
-                className="text-green-400 hover:text-green-300 font-bold transition-colors"
-                onClick={onSwitchToRegister}
-              >
-                Sign Up
-              </button>
+            <Link 
+  to="/register" 
+  className="text-green-400 hover:text-green-300 font-bold transition-colors"
+  onClick={onSwitchToRegister}
+>
+  Sign Up
+</Link>
+           
             </p>
           </div>
         </div>

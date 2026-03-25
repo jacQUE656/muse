@@ -4,12 +4,14 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
 
+
 const OAuth2RedirectHandler = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { loginWithToken } = useAuth();
 
     useEffect(() => {
+        console.log("Redirect Handler hit!");
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
         const userData = params.get('user');
