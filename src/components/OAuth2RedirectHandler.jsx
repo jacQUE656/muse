@@ -10,23 +10,32 @@ const OAuth2RedirectHandler = () => {
     const location = useLocation();
     const { loginWithToken } = useAuth();
 
-    useEffect(() => {
+   useEffect(() => {
         console.log("Redirect Handler hit!");
         const params = new URLSearchParams(location.search);
         const token = params.get('token');
-        const userData = params.get('user');
+        const userEmail = params.get('user'); // This is usually the email string
         const userId = params.get('userId');
 
         if (token) {
-            loginWithToken(token, userData, userId);
+            // WE CONSTRUCT THE OBJECT HERE TO MATCH YOUR CONTEXT EXPECTATIONS
+            const fakeResponse = {
+                user: {
+                    email: userEmail,
+                    id: userId,
+                    isEmailVerified: true // Social logins are verified by default
+                }
+            };
+
+            loginWithToken(token, fakeResponse); 
+            
             toast.success("Social login successful! Welcome to MUSE.");
-            navigate('/home'); // or /dashboard depending on your route
+            navigate('/home'); 
         } else {
             toast.error("Google login failed. Please try again.");
             navigate('/login');
         }
     }, [location, navigate, loginWithToken]);
-
     return (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center text-white">
             <Loader2 className="animate-spin text-green-500 mb-4" size={48} />
