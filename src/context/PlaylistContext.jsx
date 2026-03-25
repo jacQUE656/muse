@@ -15,7 +15,9 @@ export const PlaylistContextProvider = ({ children }) => {
 
 
     useEffect(() => {
+       if (userId) {
         fetchUserPlayList();
+       }
     }, [userId])
 
     const createPlaylist = async (manualName, manualDesc) => {

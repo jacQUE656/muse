@@ -1,7 +1,7 @@
 import axios from "axios";
 //import {saveToken} from "../commons/Commons.jsx"
 import { createContext, useContext, useEffect, useState } from "react";
-
+import { jwtDecode } from "jwt-decode";
 export const AuthContext = createContext();
 export const API_BASE_URL = "https://muse-backend-1.onrender.com";
 //export const API_BASE_URL = "http://localhost:2011";
@@ -46,15 +46,39 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
 
-const loginWithToken = (token, responseData) => {
+const loginWithToken = (token, responseData = null) => {
     setToken(token);
-    setUser(responseData.user.email); 
-    setUserId(responseData.user.id);
-    setIsEmalVerified(responseData.user.isEmailVerified);
-
     localStorage.setItem("token", token);
-    localStorage.setItem("userData", responseData.user.email);
-    localStorage.setItem("userId", responseData.user.id);
+
+    let email, id, isVerified;
+
+    if (responseData && responseData.user) {
+        // Path A: We have the full response object
+        email = responseData.user.email;
+        id = responseData.user.id;
+        isVerified = responseData.user.isEmailVerified;
+    } else {
+        // Path B: Social login (we only have the token)
+        try {
+            const decoded = jwtDecode(token);
+            // Note: Check your backend JWT structure! 
+            // It might be decoded.sub or decoded.email
+            email = decoded.sub || decoded.email; 
+            id = decoded.userId || decoded.id;
+            isVerified = true; // Google users are usually pre-verified
+        } catch (error) {
+            console.error("Failed to decode Google Token", error);
+        }
+    }
+
+    // Set States
+    setUser(email);
+    setUserId(id);
+    setIsEmalVerified(isVerified);
+
+    // Update LocalStorage
+    localStorage.setItem("userData", email);
+    localStorage.setItem("userId", id);
 };
 
     const register = async (firstname, lastname, phonenumber, email, password) => {
