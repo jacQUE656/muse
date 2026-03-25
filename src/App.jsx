@@ -1,21 +1,27 @@
 import { Toaster } from "react-hot-toast";
+import { useContext } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
+// Contexts
+import { PlayerContext } from "./context/PlayerContext.jsx";
+
+// Components
 import Display from "./components/Display.jsx";
 import AuthWrapper from "./components/AuthWrapper.jsx";
 import SideBar from "./components/SideBar.jsx";
 import Player from "./components/Player.jsx";
-import { useContext } from "react";
-import { PlayerContext } from "./context/PlayerContext.jsx";
 import MaximizePlayerOverlay from "./components/MaximizePlayerOverlay.jsx";
-import { Routes, Route } from "react-router-dom";
-import ResetPassword from "./components/ResetPassword.jsx";
-import EmailVerification from "./components/EmailVerifiation.jsx";
-import PasswordUpdate from "./components/PasswordUpdate.jsx";
+import Library from "./components/Library.jsx";
+import MobileNav from "./components/MobileNav.jsx";
+
+// Auth Pages
 import MuseLandingPage from "./components/MuseLandingPage.jsx";
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
+import ResetPassword from "./components/ResetPassword.jsx";
+import EmailVerification from "./components/EmailVerifiation.jsx";
+import PasswordUpdate from "./components/PasswordUpdate.jsx";
 import OAuth2RedirectHandler from "./components/OAuth2RedirectHandler.jsx";
-import Library from "./components/Library.jsx";
-import MobileNav from "./components/MobileNav.jsx"; // Don't forget this!
 
 const App = () => {
   const { audioRef, next, track, isMaximized } = useContext(PlayerContext);
@@ -24,59 +30,66 @@ const App = () => {
     <>
       <Toaster />
       <Routes>
-        {/* Public Routes */}
+        {/* --- PUBLIC ROUTES --- */}
         <Route path="/" element={<MuseLandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-email" element={<EmailVerification />} />
         <Route path="/update-password" element={<PasswordUpdate />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
         <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
 
-        {/* Authenticated App Routes */}
-     <Route path="*" element={
-      
-  <AuthWrapper>
-    {isMaximized && <MaximizePlayerOverlay />}
-    
-    <div className="h-screen bg-black flex flex-col overflow-hidden">
-      
-      {/* WRAPPER FOR SIDEBAR + MAIN CONTENT */}
-      <div className="flex flex-1 overflow-hidden">
-        
-        {/* LEFT: SIDEBAR (Visible only on desktop) */}
-        <aside className="hidden md:block w-[250px] lg:w-[300px] h-full p-2 bg-black">
-          <SideBar />
-        </aside>
+        {/* --- PROTECTED APP SHELL --- */}
+        {/* The '*' at the end of 'home/*' is crucial for nested routing */}
+        <Route path="/home/*" element={
+          <AuthWrapper>
+            {isMaximized && <MaximizePlayerOverlay />}
 
-        {/* RIGHT: MAIN CONTENT AREA */}
-        <main className="flex-1 h-full overflow-y-auto bg-[#121212] md:rounded-lg md:m-2 custom-scrollbar">
-          <Routes>
-            <Route path="/home" element={<Display />} />
-            <Route path="/library" element={<Library />} />
-            <Route path="/search" element={<Display />} /> {/* Or Search component */}
-            <Route path="*" element={<Display />} />
-          </Routes>
-        </main>
-      </div>
+            <div className="h-screen bg-black flex flex-col overflow-hidden text-white">
+              
+              {/* TOP SECTION: Sidebar + Main Content */}
+              <div className="flex flex-1 overflow-hidden">
+                
+                {/* 1. SIDEBAR (Desktop Only) */}
+                {/* w-64 is a fixed width to prevent the 'squishing' in your screenshot */}
+                <aside className="hidden md:block w-64 lg:w-72 flex-shrink-0 h-full p-2">
+                  <SideBar />
+                </aside>
 
-      {/* BOTTOM: PLAYER */}
-      <footer className="h-auto pb-[75px] md:pb-0 bg-black border-t border-white/5">
-        <Player />
-      </footer>
+                {/* 2. MAIN CONTENT AREA (Swaps based on URL) */}
+                <main className="flex-1 h-full overflow-y-auto bg-[#121212] md:rounded-xl md:my-2 md:mr-2 relative custom-scrollbar">
+                  <Routes>
+                    {/* These paths are relative to /home/ */}
+                    <Route path="/" element={<Display />} />
+                    <Route path="/library" element={<Library />} />
+                    {/* Add a /search route here if you have a separate Search component */}
+                    <Route path="*" element={<Navigate to="/home" />} />
+                  </Routes>
+                </main>
+              </div>
 
-      {/* MOBILE ONLY NAVIGATION */}
-      <MobileNav />
+              {/* BOTTOM SECTION: Player + Navigation */}
+              <footer className="flex-shrink-0 bg-black border-t border-white/5 z-40">
+                {/* Padding bottom on mobile so it doesn't hide behind MobileNav */}
+                <div className="pb-[75px] md:pb-0">
+                  <Player />
+                </div>
+                <MobileNav />
+              </footer>
 
-      <audio
-        ref={audioRef}
-        src={track ? track.file : null}
-        preload="auto"
-        onEnded={next}
-      ></audio>
-    </div>
-  </AuthWrapper>
-} />
+              {/* GLOBAL AUDIO ELEMENT */}
+              <audio
+                ref={audioRef}
+                src={track ? track.file : null}
+                preload="auto"
+                onEnded={next}
+              ></audio>
+            </div>
+          </AuthWrapper>
+        } />
+
+        {/* CATCH-ALL REDIRECT */}
+        <Route path="*" element={<Navigate to="/home" />} />
       </Routes>
     </>
   );
