@@ -41,7 +41,7 @@ const App = () => {
 
         {/* --- PROTECTED APP SHELL --- */}
         {/* The '*' at the end of 'home/*' is crucial for nested routing */}
-        <Route path="/home/*" element={
+        <Route path="*" element={
           <AuthWrapper>
             {isMaximized && <MaximizePlayerOverlay />}
 

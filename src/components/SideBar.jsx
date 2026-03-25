@@ -22,58 +22,47 @@ const SideBar = () => {
     };
 
     const handleCreatePlaylist = async () => {
-        const pName = prompt("Enter playlist name :");
+        const pName = prompt("Enter playlist name:");
         if (!pName) return;
-        const pDesc = prompt("Enter playlist description :");
-        if (!pDesc) return;
-        await createPlaylist(pName, pDesc);
+        const pDesc = prompt("Enter playlist description:");
+        await createPlaylist(pName, pDesc || "My MUSE Collection");
     };
 
     return (
-        /* Responsive Widths: 
-           - Hidden on mobile (hidden)
-           - Narrow on tablet (md:w-[80px])
-           - Standard on desktop (lg:w-[300px] or lg:w-[25%])
-        */
-        <div className="h-full p-2 flex-col gap-2 text-white hidden md:flex md:w-[90px] lg:w-[25%] transition-all duration-300">
+        /* The width is now controlled by the parent 'aside' in App.jsx */
+        <div className="h-full flex flex-col gap-2 text-white">
             
-            {/* TOP NAVIGATION SECTION */}
-            <div className="bg-[#121212] rounded-lg flex flex-col py-2">
+            {/* 1. TOP NAV (Fixed) */}
+            <div className="bg-[#121212] rounded-xl flex flex-col py-3 px-3 gap-1">
                 <div
                     onClick={() => navigate('/home')}
-                    className="flex items-center gap-4 px-6 py-3 cursor-pointer hover:text-green-400 transition-colors group"
+                    className="flex items-center gap-4 px-3 py-3 cursor-pointer hover:bg-white/5 rounded-lg transition-all group"
                 >
-                    <Home className="w-6 h-6 shrink-0" />
-                    <p className="font-bold hidden lg:block">Home</p>
-                    {/* Tooltip for tablet mode */}
-                    <span className="absolute left-16 bg-gray-800 text-white text-xs p-2 rounded hidden md:group-hover:block lg:hidden">Home</span>
+                    <Home className="w-6 h-6 text-gray-400 group-hover:text-green-500" />
+                    <p className="font-bold text-sm lg:block hidden">Home</p>
                 </div>
 
-                <div className="px-2 lg:px-6 py-2">
+                <div className="px-1">
                     {!showSearchInput ? (
                         <div
                             onClick={handleSearchClick}
-                            className="flex items-center gap-4 px-4 py-1 hover:text-green-400 transition-colors cursor-pointer"
+                            className="flex items-center gap-4 px-2 py-3 hover:bg-white/5 rounded-lg transition-all cursor-pointer group"
                         >
-                            <Search className="w-6 h-6 shrink-0" />
-                            <p className="font-bold hidden lg:block">Search</p>
+                            <Search className="w-6 h-6 text-gray-400 group-hover:text-green-500" />
+                            <p className="font-bold text-sm lg:block hidden">Search</p>
                         </div>
                     ) : (
-                        <div className="flex items-center gap-2">
-                            <Search className="w-5 h-5 text-gray-400 shrink-0 hidden lg:block" />
+                        <div className="flex items-center gap-2 p-1 bg-[#2a2a2a] rounded-full px-3 animate-in fade-in zoom-in duration-200">
+                            <Search className="w-4 h-4 text-gray-400 shrink-0" />
                             <input
                                 value={searchQuery}
                                 onChange={e => setSearchQuery(e.target.value)}
                                 type="text"
                                 placeholder="Search..."
-                                className="w-full bg-[#2a2a2a] text-white placeholder-gray-400 px-3 py-1.5 rounded-full text-xs focus:outline-none focus:ring-1 focus:ring-green-400 hidden lg:block"
+                                className="w-full bg-transparent text-white text-xs py-1 focus:outline-none"
                                 autoFocus
                             />
-                            {/* Mobile/Tablet Search Button (reverts input) */}
-                            <button onClick={handleClearSearch} className="lg:hidden p-2">
-                                <X className="w-5 h-5 text-gray-400" />
-                            </button>
-                            <button onClick={handleClearSearch} className="hidden lg:block">
+                            <button onClick={handleClearSearch}>
                                 <X className="w-4 h-4 text-gray-400 hover:text-white" />
                             </button>
                         </div>
@@ -81,43 +70,43 @@ const SideBar = () => {
                 </div>
             </div>
 
-            {/* LIBRARY SECTION */}
-            <div className="bg-[#121212] flex-1 rounded-lg flex flex-col overflow-hidden">
-                <div className="p-4 flex items-center justify-center lg:justify-between">
-                    <div className="flex items-center gap-3">
-                        <Library className="w-6 h-6 text-gray-400 shrink-0" />
-                        <p className="font-semibold text-gray-400 hidden lg:block">Your Library</p>
+            {/* 2. LIBRARY SECTION (Scrollable) */}
+            <div className="bg-[#121212] flex-1 rounded-xl flex flex-col overflow-hidden">
+                <div className="p-5 flex items-center justify-between">
+                    <div 
+                        onClick={() => navigate('/library')} 
+                        className="flex items-center gap-3 cursor-pointer group"
+                    >
+                        <Library className="w-6 h-6 text-gray-400 group-hover:text-white transition-colors" />
+                        <p className="font-bold text-gray-400 group-hover:text-white hidden lg:block">Library</p>
                     </div>
-                    <div className="hidden lg:flex items-center gap-3">
-                        <Plus
-                            onClick={handleCreatePlaylist}
-                            className="w-5 h-5 cursor-pointer hover:text-green-400 transition-colors" 
-                        />
-                        <ArrowRight className="w-5 h-5 cursor-pointer hover:text-green-400 transition-colors" />
-                    </div>
+                    <Plus
+                        onClick={handleCreatePlaylist}
+                        className="w-5 h-5 text-gray-400 cursor-pointer hover:text-green-500 transition-colors lg:block hidden" 
+                    />
                 </div>
 
-                {/* SCROLLABLE LIST */}
-                <div className="flex-1 overflow-y-auto px-2 lg:px-4 py-2 custom-scrollbar">
+                {/* PLAYLIST LIST */}
+                <div className="flex-1 overflow-y-auto px-2 custom-scrollbar">
                     {playlists.length > 0 ? (
                         playlists.map((playlist) => (
                             <div 
                                 key={playlist.id} 
                                 onClick={() => navigate(`/playlist/${playlist.id}`)}
-                                className="group flex items-center justify-between cursor-pointer hover:bg-[#ffffff10] rounded-md p-2 transition-colors"
+                                className="group flex items-center justify-between cursor-pointer hover:bg-white/5 rounded-lg p-2 mb-1 transition-all"
                             >
                                 <div className="flex items-center gap-3 overflow-hidden">
-                                    <div className="w-10 h-10 bg-[#282828] shrink-0 rounded flex items-center justify-center text-gray-400 font-bold">
+                                    <div className="w-11 h-11 bg-gradient-to-br from-neutral-700 to-neutral-900 shrink-0 rounded-lg flex items-center justify-center text-white font-bold shadow-md">
                                         {playlist.name[0]?.toUpperCase()}
                                     </div>
                                     <div className="hidden lg:block overflow-hidden">
-                                        <p className="font-medium truncate text-sm text-white">{playlist.name}</p>
-                                        <p className="text-xs text-gray-400">Playlist</p>
+                                        <p className="font-bold truncate text-sm text-white">{playlist.name}</p>
+                                        <p className="text-[10px] text-gray-500 uppercase font-black">Playlist</p>
                                     </div>
                                 </div>
                                 
                                 <button
-                                    className="hidden lg:block opacity-0 group-hover:opacity-100 p-1 hover:text-red-500 transition-all"
+                                    className="hidden lg:block opacity-0 group-hover:opacity-100 p-2 text-gray-500 hover:text-red-500 transition-all"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         if(confirm("Delete playlist?")) removePlaylist(playlist.id);
@@ -128,26 +117,16 @@ const SideBar = () => {
                             </div>
                         ))
                     ) : (
-                        <div className="p-4 bg-[#242424] rounded-lg hidden lg:block">
-                            <h1 className="text-sm font-bold">Create your first playlist</h1>
-                            <p className="text-xs font-light mt-1">It's easy, we'll help you</p>
+                        <div className="p-4 bg-white/5 rounded-xl m-2 hidden lg:block">
+                            <p className="text-sm font-bold">Start your collection</p>
                             <button
                                 onClick={handleCreatePlaylist}
-                                disabled={loading}
-                                className="px-4 py-1.5 bg-white text-xs font-bold text-black rounded-full mt-4 hover:scale-105 transition-transform"
+                                className="mt-3 px-4 py-1.5 bg-white text-black text-xs font-black rounded-full hover:scale-105 transition-all"
                             >
-                                {loading ? "Creating..." : "Create playlist"}
+                                Create Playlist
                             </button>
                         </div>
                     )}
-                </div>
-
-                {/* PODCASTS (Desktop Only Hint) */}
-                <div className="hidden lg:block p-4 bg-[#242424] m-4 rounded-lg">
-                    <h1 className="text-sm font-bold">Find podcasts to follow</h1>
-                    <button className="px-4 py-1.5 bg-white text-xs font-bold text-black rounded-full mt-3 hover:scale-105 transition-transform">
-                        Browse podcasts
-                    </button>
                 </div>
             </div>
         </div>
